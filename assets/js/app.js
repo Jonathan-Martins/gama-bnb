@@ -48,16 +48,16 @@ const listItems = (items, paginaAtual, limite=4) => {
    let totalPaginas = Math.ceil(items.length / limite)
    let contador = (paginaAtual * limite) - limite
    let delimitador = contador + limite
-   console.log(paginaAtual)
+   
    if (paginaAtual <= totalPaginas) {
-      for (let i = 0; i < delimitador; i++) {
+      for (let i = contador; i < delimitador; i++) {
          if (items[i] != null) {
             resultado.push(items[i])
          }
          contador++
       }
    }
-
+   
    return resultado
 }
 
@@ -66,6 +66,13 @@ btnProximo.addEventListener('click', event => {
       pgAtual++
       getData()
    }   
+})
+
+btnAnterior.addEventListener('click', () => {
+   if (pgAtual > 1) {
+      pgAtual--
+      getData()
+   }
 })
 
 const getData = async () => {
