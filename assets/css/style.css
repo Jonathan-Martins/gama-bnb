@@ -13,6 +13,7 @@
 .cabecalho h1 {
     margin-top: 40px;
     text-align: center;
+    color: #ff3355;
 }
 
 .card {
@@ -48,6 +49,24 @@
     margin-left: 10px;
 }
 
+.btnContainer {
+    display: block;    
+    margin: 40px;
+}
+
+.btn {
+    padding: 20px;
+    font-size: 1.2em;
+    font-weight: bold;
+    background-color: #d9d9d9;
+    transition: 0.2s;
+}
+
+.btn:hover {
+    background-color: #ff3355;
+    color: #fff;
+}
+
 .rodape {
     display: flex;
     align-items: center;
@@ -58,4 +77,6 @@
 
 .rodape p {
     margin-left: 10px;
+    font-weight: bold;
+    color: #ff3355;
 }
