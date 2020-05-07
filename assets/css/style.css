@@ -106,3 +106,28 @@
     font-weight: bold;
     color: #ff3355;
 }
+
+@media (max-width: 560px) {
+    .cabecalho {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding-bottom: 10px;
+    }
+}
+
+@media (max-width: 490px) {
+    .card {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .card-content p {
+        margin-bottom: 5px;
+    }
+
+    .card-title {
+        margin: 5px;
+    }
+}
