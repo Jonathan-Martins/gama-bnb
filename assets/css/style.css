@@ -4,6 +4,9 @@
 }
 
 .cabecalho {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
     height: 100%;
     width: 100%;
     margin-bottom: 40px;
@@ -15,6 +18,28 @@
     text-transform: uppercase;
     margin-left: 10px;
     color: #ff3355;
+}
+
+.cabecalho-search {
+    margin-top: 40px;
+    margin-right: 10px;
+}
+
+.cabecalho-search input {
+    padding: 5px;
+    border: 1px #8c8c8c solid;
+    font-size: 1em;   
+}
+
+.btnSearch {
+    padding: 7px;
+    font-size: 1em;
+    transition: 0.2s;
+}
+
+.btnSearch:hover {
+    background-color: #ff3355;
+    color: #fff;
 }
 
 .card {
