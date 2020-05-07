@@ -12,7 +12,20 @@ const fetchData = async url => {
    return await response.json()
 }
 
+/* Função que insere os itens na página. Recebe como parâmetro um array de objetos.
+   {
+      photo,
+      property_name,
+      name,
+      price
+   }
+   photo: foto do local; property_name: qual o tipo do local. ex: casa, apartamento;
+   name: nome do lugar; price: preço de estadia.
+*/
 const insertItemsIntoPage = (items) => {
+   /* Usando a função map para colocar cada item do array recebido dentro 
+      de uma <li> da classe "card" e em seguida adicioná-la a <ul> aptElement.
+   */ 
    aptElement.innerHTML = items.map(({ photo, property_type, name, price }) => 
       `<li class="card">
          <div class="card-img">
@@ -27,26 +40,38 @@ const insertItemsIntoPage = (items) => {
   ).join('')
 }
 
-const filterItens = async (name) => {   
+const filterItens = async (name) => {
+   // recebendo os dados da api  
    const data = await fetchData(apiUrl)
-   /*const item = data.filter((item) => item.name === name)*/
-   const item = data.filter(item => {
+   /* Filtrando o array de recebido */
+   const items = data.filter(item => {
+      /* Retornando pra um novo array todos os itens que possuem os
+         mesmos caracteres do valor informado no input
+      */
       return (item.name.toLowerCase().indexOf(name) > -1)
    })
-   
-   if (item.length === 0) {
+   // Verificando se o array está vazio. Se sim emite um alert e encerra a função
+   if (items.length === 0) {
       alert('Nenhum item encontrado.')     
       return
    }
-   insertItemsIntoPage(item)
+   // Insere os itens encontrados na página
+   insertItemsIntoPage(items)
 }
 
-btnSearch.addEventListener('click', () => {
+const handleSearch = () => {
+   // name recebe o valor do input de texto "search" sem espaços no ínicio e no fim.
    const name = inputEl.value.trim()
+   // invocação da função filterItens() passando name como parâmetro de busca
    filterItens(name)
+   // O input recebe o valor vazio
    inputEl.value = ''
+   // O foco vai para o input "search"
    inputEl.focus()
-})
+}
+
+// Listener que espera o clique no botão "Buscar"
+btnSearch.addEventListener('click', handleSearch)
 
 const listItems = (items, paginaAtual, limite=4) => {
    const resultado = []
@@ -66,23 +91,30 @@ const listItems = (items, paginaAtual, limite=4) => {
    return resultado
 }
 
-btnProximo.addEventListener('click', event => {   
+const handleNextPage = () => {
    if (pgAtual < 6) {
       pgAtual++
       getData()
    }   
-})
+}
 
-btnAnterior.addEventListener('click', () => {
+const handlePreviousPage = () => {
    if (pgAtual > 1) {
       pgAtual--
       getData()
    }
-})
+}
+
+btnProximo.addEventListener('click', handleNextPage)
+
+btnAnterior.addEventListener('click', handlePreviousPage)
 
 const getData = async () => {
+   // recebendo os dados da api.  
    const data = await fetchData(apiUrl)
-   const items = listItems(data, pgAtual)   
+   // Fazendo a páginação. Dividindo o array em 6 págs de 4 itens.
+   const items = listItems(data, pgAtual)
+   // Inserindo os itens na página.
    insertItemsIntoPage(items)
 }
 
