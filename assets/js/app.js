@@ -2,6 +2,7 @@ const ulElement = document.querySelector('.apt') // Selecionando a ul com a clas
 const btnProximo = document.querySelector('.btnProximo') // selecionando o botão "próximo"
 const btnAnterior = document.querySelector('.btnAnterior')  // selecionando o botão "anterior"
 const btnSearch = document.querySelector('.btnSearch') // selecionando o botão "buscar"
+const inputSearch = document.querySelector('input[name="search"]') 
 const inputEl = document.querySelector('input[name="search"') // selecionando o input name="search"
 const inputCheckIn = document.querySelector('#check-in') // selecionando o input com a classe check-in
 const inputCheckOut = document.querySelector('#check-out') // selecionando o input com a classe check-in
@@ -174,6 +175,12 @@ btnAnterior.addEventListener('click', handlePreviousPage)
 
 // Listener que espera o clique no botão "Buscar"
 btnSearch.addEventListener('click', handleSearch)
+
+inputSearch.addEventListener('keydown', e => {
+   if (e.keyCode === 13) {
+      handleSearch()
+   }
+})
 
 // Listener que espera o clieque no botão "calcular"
 btnCalendar.addEventListener('click', handleCheckInCheckOut)

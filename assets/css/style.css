@@ -15,7 +15,11 @@
 
 .cabecalho h1 {
     margin-top: 40px;
+}
+
+.cabecalho a {    
     text-transform: uppercase;
+    text-decoration: none;
     margin-left: 10px;
     color: #ff3355;
 }
@@ -133,6 +137,20 @@
     color: #ff3355;
 }
 
+.social-midia {
+    display: flex;
+    justify-content: space-between;
+    width: 20%;
+}
+
+.social-midia > li {
+    list-style: none;    
+}
+
+.social-midia > li > a > img {
+    width: 30%;
+}
+
 @media (max-width: 560px) {
     .cabecalho {
         flex-direction: column;
@@ -167,5 +185,25 @@
 
     .card-title {
         margin: 5px;
+    }
+
+    .rodape {
+        flex-direction: column;        
+    }
+
+    .rodape p {
+        margin-top: 10px;
+    }
+    
+    .social-midia li {
+        margin-top: 10px;
+    }
+
+    .social-midia li:last-child {
+        margin-left: 30px;
+    }
+
+    .social-midia > li > a > img {
+        width: 100%;        
     }
 }
