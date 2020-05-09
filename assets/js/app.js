@@ -1,13 +1,13 @@
-const aptElement = document.querySelector('.apt')
-const btnProximo = document.querySelector('.btnProximo')
-const btnAnterior = document.querySelector('.btnAnterior')
-const btnSearch = document.querySelector('.btnSearch')
-const inputEl = document.querySelector('input[name="search"')
-const inputCheckIn = document.querySelector('#check-in')
-const inputCheckOut = document.querySelector('#check-out')
-const btnCalendar = document.querySelector('.btnCalendar')
+const ulElement = document.querySelector('.apt') // Selecionando a ul com a classe apt
+const btnProximo = document.querySelector('.btnProximo') // selecionando o botão "próximo"
+const btnAnterior = document.querySelector('.btnAnterior')  // selecionando o botão "anterior"
+const btnSearch = document.querySelector('.btnSearch') // selecionando o botão "buscar"
+const inputEl = document.querySelector('input[name="search"') // selecionando o input name="search"
+const inputCheckIn = document.querySelector('#check-in') // selecionando o input com a classe check-in
+const inputCheckOut = document.querySelector('#check-out') // selecionando o input com a classe check-in
+const btnCalendar = document.querySelector('.btnCalendar') // selecionando o botão "calcular"
 
-let pgAtual = 1
+let pgAtual = 1 // Variavel que indica a página atual
 
 
 
@@ -18,7 +18,9 @@ const fetchData = async url => {
    return await response.json()
 }
 
-/* Função que insere os itens na página. Recebe como parâmetro um array de objetos.
+/* Gera os cards de itens na página. 
+   Recebe dois parâmetros: items(Array), dias(Number)
+   items é um array de objetos vindos da api contendo as seguintes propriedades: 
    {
       photo,
       property_name,
@@ -28,14 +30,10 @@ const fetchData = async url => {
    photo: foto do local; property_name: qual o tipo do local. ex: casa, apartamento;
    name: nome do lugar; price: preço de estadia.
 */
-const insertItemsIntoPage = (items) => {
-   /* Usando a função map para colocar cada item do array recebido dentro 
-      de uma <li> da classe "card" e em seguida adicioná-la a <ul> aptElement.
-   */ 
-   aptElement.innerHTML = generateHTML(items)
-}
-
 const generateHTML = (items, dias=1) => {
+   /* Returna o resultado da função map para colocar cada item do array recebido dentro 
+      de uma <li> da classe "card".
+   */ 
    return items.map(({ photo, property_type, name, price }) => 
       `<li class="card">
          <div class="card-img">
@@ -51,6 +49,13 @@ const generateHTML = (items, dias=1) => {
    ).join('')
 }
 
+// Função que insere os itens na página
+const insertItemsIntoPage = (items) => {
+   // Coloca o resultado da função generateHTML dentro da <ul class="apt"> 
+   ulElement.innerHTML = generateHTML(items)   
+}
+
+// Filtra os itens da página.
 const filterItens = async (name) => {
    // recebendo os dados da api  
    const data = await fetchData(apiUrl)
@@ -70,27 +75,29 @@ const filterItens = async (name) => {
    insertItemsIntoPage(items)
 }
 
+// Atualiza o preço do aluguel de acordo com o período de tempo marcado.
 const insertTotalRentItemsIntoPage = (itens, dias) => {
-   aptElement.innerHTML = generateHTML(itens, dias)
+   // coloca na <ul class="apt"> os itens com os novos preços
+   ulElement.innerHTML = generateHTML(itens, dias)
 }
 
+
+// Função que retorna a diferença entre duas datas(entrada - saída)
 const checkRent = (checkIn, checkOut) => {
+   /** As duas primeiras linhas criam objetos do tipo Date
+    *  usando como argumento checkIn e checkOut que são recebimentos
+    *  parâmetro.
+    */
    const entrada = new Date(checkIn)
    const saida = new Date(checkOut)
+   // diff recebe a diferença em milissegundos entre as duas datas. Math.abs
+   // é usado para termos o valor absoluto dessa conta.
    const diff = Math.abs(saida.getTime() - entrada.getTime())
+   // dias recebe a conversão do valor obtido em diff para dias.
+   // Math.ceil é usado para termos o menor número inteiro próximo a expressão usada como argumento. 
    const dias = Math.ceil(diff / (1000 * 60 * 60 * 24))
    return dias
 }
-
-btnCalendar.addEventListener('click', async () => {
-   const checkIn = inputCheckIn.value
-   const checkOut = inputCheckOut.value
-   if (!checkIn || !checkOut) return
-   const dias = checkRent(checkIn, checkOut)
-   const data = await fetchData(apiUrl)  
-   insertTotalRentItemsIntoPage(data, dias)
-})
-
 
 const listItems = (items, paginaAtual, limite=4) => {
    const resultado = []
@@ -110,6 +117,7 @@ const listItems = (items, paginaAtual, limite=4) => {
    return resultado
 }
 
+// Função com lógica interna do botão "próxima"
 const handleNextPage = () => {
    if (pgAtual < 6) {
       pgAtual++
@@ -117,6 +125,7 @@ const handleNextPage = () => {
    }   
 }
 
+// Função com a lógica interna do botão "anterior"
 const handlePreviousPage = () => {
    if (pgAtual > 1) {
       pgAtual--
@@ -124,6 +133,7 @@ const handlePreviousPage = () => {
    }
 }
 
+// Função com a lógica interna do botão de busca
 const handleSearch = () => {
    // name recebe o valor do input de texto "search" sem espaços no ínicio e no fim.
    const name = inputEl.value.trim()
@@ -135,12 +145,38 @@ const handleSearch = () => {
    inputEl.focus()
 }
 
+// Função com a lógica interna do botão para calcular o preço dos alugueis
+const handleCheckInCheckOut = async () => {
+   // Recebendo os valores dos inputs do tipo date que representam check-in e check-out
+   const checkIn = inputCheckIn.value
+   const checkOut = inputCheckOut.value
+
+   // Se o valor de um dos dois inputs for nulo a função é encerrada.
+   if (!checkIn || !checkOut) return
+
+   /* A const dias recebe a diferença entre a data entrada(check-in) e 
+      a data de saída(check-out). Este valor é um Number*/
+   const dias = checkRent(checkIn, checkOut)
+
+   // data armazena um array com os dados vindos da api.
+   const data = await fetchData(apiUrl)
+
+   // insertTotalRentItemsIntoPage insere os itens na página com 
+   // o valor a ser pago proporcional ao período em dias. 
+   insertTotalRentItemsIntoPage(data, dias)
+}
+
+// Listener que espera um clique no botão "próximo"
 btnProximo.addEventListener('click', handleNextPage)
 
+// Listener que espera um clique no botão "anterior"
 btnAnterior.addEventListener('click', handlePreviousPage)
 
 // Listener que espera o clique no botão "Buscar"
 btnSearch.addEventListener('click', handleSearch)
+
+// Listener que espera o clieque no botão "calcular"
+btnCalendar.addEventListener('click', handleCheckInCheckOut)
 
 const getData = async () => {
    // recebendo os dados da api.  
