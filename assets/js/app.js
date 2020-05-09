@@ -3,7 +3,13 @@ const btnProximo = document.querySelector('.btnProximo')
 const btnAnterior = document.querySelector('.btnAnterior')
 const btnSearch = document.querySelector('.btnSearch')
 const inputEl = document.querySelector('input[name="search"')
+const inputCheckIn = document.querySelector('#check-in')
+const inputCheckOut = document.querySelector('#check-out')
+const btnCalendar = document.querySelector('.btnCalendar')
+
 let pgAtual = 1
+
+
 
 const apiUrl = 'https://api.sheety.co/30b6e400-9023-4a15-8e6c-16aa4e3b1e72'
 
@@ -72,6 +78,40 @@ const handleSearch = () => {
 
 // Listener que espera o clique no botão "Buscar"
 btnSearch.addEventListener('click', handleSearch)
+
+const insertTotalRentItemsIntoPage = (itens, dias) => {
+   aptElement.innerHTML = itens.map(({ photo, property_type, name, price }) => 
+      `<li class="card">
+         <div class="card-img">
+            <img src="${photo}">
+         </div>
+         <div class="card-content">
+            <h2 class="card-title">${name}</h2>
+            <p class="card-subtitle">${property_type}</p>
+            <p class="price">${price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+            <p class="price">${Intl.NumberFormat('pt-BR', { style: 'currency',currency: 'BRL'}).format(price*dias)}</p>            
+         </div>
+      </li>`
+  ).join('')
+}
+
+const checkRent = (checkIn, checkOut) => {
+   const entrada = new Date(checkIn)
+   const saida = new Date(checkOut)
+   const diff = Math.abs(saida.getTime() - entrada.getTime())
+   const dias = Math.ceil(diff / (1000 * 60 * 60 * 24))
+   return dias
+}
+
+btnCalendar.addEventListener('click', async () => {
+   const checkIn = inputCheckIn.value
+   const checkOut = inputCheckOut.value
+   if (!checkIn || !checkOut) return
+   const dias = checkRent(checkIn, checkOut)
+   const data = await fetchData(apiUrl)
+   insertTotalRentItemsIntoPage(data, dias)
+})
+
 
 const listItems = (items, paginaAtual, limite=4) => {
    const resultado = []

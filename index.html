@@ -17,6 +17,16 @@
             </div>
         </header>
 
+        <div class="calendar">
+            <label for="check-in">Check-in: </label>
+            <input type="date" name="check-in" id="check-in" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" class="date-input">
+
+            <label for="check-out">Check-out: </label>
+            <input type="date" name="check-out" id="check-out" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" class="date-input">
+
+            <button class="btnCalendar">Calcular</button>
+        </div>
+
         <ul class="apt"></ul>
 
        <section class="btnContainer">
