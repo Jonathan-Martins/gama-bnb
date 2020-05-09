@@ -32,7 +32,11 @@ const insertItemsIntoPage = (items) => {
    /* Usando a função map para colocar cada item do array recebido dentro 
       de uma <li> da classe "card" e em seguida adicioná-la a <ul> aptElement.
    */ 
-   aptElement.innerHTML = items.map(({ photo, property_type, name, price }) => 
+   aptElement.innerHTML = generateHTML(items)
+}
+
+const generateHTML = (items, dias=1) => {
+   return items.map(({ photo, property_type, name, price }) => 
       `<li class="card">
          <div class="card-img">
             <img src="${photo}">
@@ -40,10 +44,11 @@ const insertItemsIntoPage = (items) => {
          <div class="card-content">
             <h2 class="card-title">${name}</h2>
             <p class="card-subtitle">${property_type}</p>
-            <p class="price">${price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+            <p class="price">Diaria: ${price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+            <p class="price">Total: ${Intl.NumberFormat('pt-BR', { style: 'currency',currency: 'BRL'}).format(price*dias)}</p>
          </div>
       </li>`
-  ).join('')
+   ).join('')
 }
 
 const filterItens = async (name) => {
@@ -65,34 +70,8 @@ const filterItens = async (name) => {
    insertItemsIntoPage(items)
 }
 
-const handleSearch = () => {
-   // name recebe o valor do input de texto "search" sem espaços no ínicio e no fim.
-   const name = inputEl.value.trim()
-   // invocação da função filterItens() passando name como parâmetro de busca
-   filterItens(name)
-   // O input recebe o valor vazio
-   inputEl.value = ''
-   // O foco vai para o input "search"
-   inputEl.focus()
-}
-
-// Listener que espera o clique no botão "Buscar"
-btnSearch.addEventListener('click', handleSearch)
-
 const insertTotalRentItemsIntoPage = (itens, dias) => {
-   aptElement.innerHTML = itens.map(({ photo, property_type, name, price }) => 
-      `<li class="card">
-         <div class="card-img">
-            <img src="${photo}">
-         </div>
-         <div class="card-content">
-            <h2 class="card-title">${name}</h2>
-            <p class="card-subtitle">${property_type}</p>
-            <p class="price">${price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
-            <p class="price">${Intl.NumberFormat('pt-BR', { style: 'currency',currency: 'BRL'}).format(price*dias)}</p>            
-         </div>
-      </li>`
-  ).join('')
+   aptElement.innerHTML = generateHTML(itens, dias)
 }
 
 const checkRent = (checkIn, checkOut) => {
@@ -108,7 +87,7 @@ btnCalendar.addEventListener('click', async () => {
    const checkOut = inputCheckOut.value
    if (!checkIn || !checkOut) return
    const dias = checkRent(checkIn, checkOut)
-   const data = await fetchData(apiUrl)
+   const data = await fetchData(apiUrl)  
    insertTotalRentItemsIntoPage(data, dias)
 })
 
@@ -145,9 +124,23 @@ const handlePreviousPage = () => {
    }
 }
 
+const handleSearch = () => {
+   // name recebe o valor do input de texto "search" sem espaços no ínicio e no fim.
+   const name = inputEl.value.trim()
+   // invocação da função filterItens() passando name como parâmetro de busca
+   filterItens(name)
+   // O input recebe o valor vazio
+   inputEl.value = ''
+   // O foco vai para o input "search"
+   inputEl.focus()
+}
+
 btnProximo.addEventListener('click', handleNextPage)
 
 btnAnterior.addEventListener('click', handlePreviousPage)
+
+// Listener que espera o clique no botão "Buscar"
+btnSearch.addEventListener('click', handleSearch)
 
 const getData = async () => {
    // recebendo os dados da api.  
