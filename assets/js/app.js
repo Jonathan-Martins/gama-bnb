@@ -65,7 +65,7 @@ const filterItens = async (name) => {
       /* Retornando pra um novo array todos os itens que possuem os
          mesmos caracteres do valor informado no input
       */
-      return (item.name.toLowerCase().indexOf(name) > -1)
+      return (item.name.toLowerCase().indexOf(name.toLowerCase()) > -1)
    })
    // Verificando se o array está vazio. Se sim emite um alert e encerra a função
    if (items.length === 0) {
@@ -123,6 +123,7 @@ const handleNextPage = () => {
    if (pgAtual < 6) {
       pgAtual++
       getData()
+      scroll(0, 100)
    }   
 }
 
@@ -131,6 +132,7 @@ const handlePreviousPage = () => {
    if (pgAtual > 1) {
       pgAtual--
       getData()
+      scroll(0, 100)
    }
 }
 
